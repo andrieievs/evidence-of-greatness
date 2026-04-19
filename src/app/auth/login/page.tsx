@@ -25,12 +25,15 @@ export default function LoginPage() {
     google: Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET),
     github: Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET),
   };
+  const credentialsEnabled = Boolean(
+    process.env.AUTH_DEMO_EMAIL?.trim() && process.env.AUTH_DEMO_PASSWORD,
+  );
 
   return (
     <div className={cn(appShellClass, "flex min-h-[60vh] flex-col justify-center gap-6 py-16")}>
       <div className="mx-auto flex w-full max-w-md flex-col gap-6">
         <Suspense fallback={<LoginFallback />}>
-          <LoginForm oauth={oauth} />
+          <LoginForm oauth={oauth} credentialsEnabled={credentialsEnabled} />
         </Suspense>
         <div className="flex flex-col gap-3">
           <Button asChild variant="ghost">
