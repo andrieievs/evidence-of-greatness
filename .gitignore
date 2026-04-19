@@ -10,6 +10,10 @@ lerna-debug.log*
 node_modules
 package-lock.json
 
+# Environment variables
+.env
+.env.local
+
 # Yarn (Berry): local state / cache (lockfile stays committed)
 .yarn/cache
 .yarn/unplugged
