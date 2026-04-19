@@ -1,3 +1,3 @@
 export { AuthCard } from "./components/auth-card";
-export { useSession } from "./hooks/use-session";
-export { signInPlaceholder } from "./services/auth-api";
+export { LoginForm } from "./components/login-form";
+export { SignOutButton } from "./components/sign-out-button";

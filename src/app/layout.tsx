@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import { Geist } from "next/font/google";
 
+import { AuthProvider } from "@/components/providers/auth-provider";
+import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
 
 import "@/styles/globals.css";
@@ -18,10 +19,6 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
-function Providers({ children }: { children: ReactNode }) {
-  return <>{children}</>;
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,8 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.className} min-h-screen`}>
-        <Providers>{children}</Providers>
+      <body className={`${geistSans.className} flex min-h-screen flex-col`}>
+        <AuthProvider>
+          <SiteHeader />
+          <div className="flex-1">{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -5,12 +5,26 @@ import { Fraunces } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 
+function collectEntryHref(isSignedIn: boolean) {
+  if (isSignedIn) {
+    return siteConfig.routes.collect;
+  }
+  const q = new URLSearchParams({ callbackUrl: siteConfig.routes.collect });
+  return `${siteConfig.routes.login}?${q.toString()}`;
+}
+
 const display = Fraunces({
   subsets: ["latin"],
   weight: ["500", "600"],
 });
 
-export function LandingPage() {
+type LandingPageProps = {
+  isSignedIn: boolean;
+};
+
+export function LandingPage({ isSignedIn }: LandingPageProps) {
+  const collectHref = collectEntryHref(isSignedIn);
+
   return (
     <main className="min-h-screen">
       <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-violet-100/80 via-background to-amber-50/40">
@@ -35,7 +49,7 @@ export function LandingPage() {
           </p>
           <div className="mt-12 flex flex-col items-center gap-4 sm:mt-14">
             <Button asChild size="lg" className="rounded-full px-10 text-base shadow-md">
-              <Link href={siteConfig.routes.collect}>Start Your Memory Collection</Link>
+              <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
             </Button>
             <p className="max-w-md text-sm italic leading-relaxed text-muted-foreground/90">
               Small reminders of growth add up—especially on the hard days.
@@ -96,7 +110,7 @@ export function LandingPage() {
             Ready to honor the path you&apos;re on?
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full px-10 shadow-sm">
-            <Link href={siteConfig.routes.collect}>Start Your Memory Collection</Link>
+            <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
           </Button>
         </div>
       </section>

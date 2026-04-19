@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AuthCard } from "@/features/auth/components/auth-card";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 
@@ -12,13 +13,18 @@ export const metadata: Metadata = {
 export default function SignupPage() {
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center gap-6 px-4 py-16">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Sign up</h1>
-        <p className="text-sm text-muted-foreground">Registration UI goes here.</p>
-      </div>
+      <AuthCard
+        title="Sign up"
+        description="This project uses Auth.js. Self-serve registration is not wired yet—use the demo credentials from .env.example or add a database + adapter."
+      >
+        <p className="text-sm text-muted-foreground">
+          For now, sign in with the demo account (see <code className="rounded bg-muted px-1 py-0.5 text-xs">AUTH_DEMO_EMAIL</code> /{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">AUTH_DEMO_PASSWORD</code>) or configure GitHub OAuth.
+        </p>
+      </AuthCard>
       <div className="flex flex-col gap-3">
-        <Button asChild variant="outline">
-          <Link href={siteConfig.routes.login}>Already have an account? Log in</Link>
+        <Button asChild variant="default">
+          <Link href={siteConfig.routes.login}>Go to log in</Link>
         </Button>
         <Button asChild variant="ghost">
           <Link href={siteConfig.routes.home}>Back to home</Link>
