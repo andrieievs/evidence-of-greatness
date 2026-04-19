@@ -15,7 +15,7 @@ export function CollectShell({ children }: CollectShellProps) {
     <div className={cn(appShellClass, "min-h-screen py-10")}>
       <Link
         href={siteConfig.routes.home}
-        className="mb-8 inline-flex text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+        className="mb-8 inline-flex text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline print:hidden"
       >
         ← Back to home
       </Link>
