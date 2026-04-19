@@ -9,3 +9,4 @@ export { DatePickerField } from "./components/date-picker-field";
 export { PresentationView } from "./components/presentation-view";
 export { ProudMomentsForm } from "./components/proud-moments-form";
 export { ProudMomentsApp } from "./components/proud-moments-app";
+export { CollectShell } from "./components/collect-shell";

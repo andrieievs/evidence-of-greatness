@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { ProudMomentsApp } from "@/features/proud-moments";
+import { ProudMomentsApp } from "./proud-moments-app";
 import { siteConfig } from "@/config/site";
 
-export function CollectPage() {
+export function CollectShell() {
   return (
     <div className="mx-auto min-h-screen max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <Link

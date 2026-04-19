@@ -1,9 +1,14 @@
-# `src/app/` — Next.js App Router
+# `src/app/` — routing layer (Next.js)
 
-Next.js **only** recognizes certain filenames here (`layout.tsx`, `page.tsx`, …). You cannot replace `layout.tsx` with `App.tsx` as the framework entry; see [Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts).
+Only **routes, layouts, and route metadata** live here. UI and domain logic live under `src/features/` and `src/components/`.
 
-- **`App.tsx`** — Root `<html>` / `<body>`, fonts, **`metadata`**, and `AppProviders` (add global providers here).
-- **`layout.tsx`** — Imports global CSS, then wires the default export + `metadata` from `./App` (required wrapper Next looks for).
-- **`page.tsx`**, **`collect/page.tsx`** — Route segments for `/` and `/collect` (each needs its own `page.tsx`).
+| Path | URL |
+|------|-----|
+| `layout.tsx` | Root `<html>` / `<body>`, fonts, global `metadata` |
+| `page.tsx` | `/` |
+| `auth/login/page.tsx` | `/auth/login` |
+| `auth/signup/page.tsx` | `/auth/signup` |
+| `dashboard/layout.tsx` + `page.tsx` | `/dashboard` (nested layout) |
+| `collect/page.tsx` | `/collect` (proud moments tool) |
 
-Everything else lives under `src/page/`, `src/features/`, `src/layouts/` (non-root), etc.
+The **`auth`** segment is a normal URL prefix (not a route group), so login and signup live under **`/auth/...`**.

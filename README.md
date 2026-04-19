@@ -16,10 +16,14 @@ yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in the browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-- **`/`** — Landing page  
-- **`/collect`** — Dynamic form + presentation flow (“memory collection”)
+| Path | Description |
+|------|-------------|
+| **`/`** | Landing page |
+| **`/collect`** | Proud moments form + presentation |
+| **`/dashboard`** | Dashboard shell (placeholder overview) |
+| **`/auth/login`**, **`/auth/signup`** | Auth placeholders |
 
 ### Other scripts
 
@@ -31,35 +35,37 @@ Open [http://localhost:3000](http://localhost:3000) in the browser.
 
 ## Project structure (`src/`)
 
-This app uses the **Next.js App Router** (`src/app/` — see [`src/app/README.md`](src/app/README.md)). Screen-level UI lives in **`src/page/`** (see [`src/page/README.md`](src/page/README.md)). A stub [`src/pages/README.md`](src/pages/README.md) explains why that folder is not used for `.tsx` modules.
+SPA-style organization: **routing** in `app/`, **shared UI** in `components/`, **domain** in `features/`, **helpers** in `lib/`, `utils/`, `types/`.
 
 ```
 src/
-├── app/
-│   ├── App.tsx             # Root layout + metadata + providers (wired from `layout.tsx`)
-│   ├── layout.tsx          # Next-required; imports CSS + `App.tsx`
-│   ├── page.tsx            # `/` route
-│   └── collect/page.tsx    # `/collect` route
-├── assets/                 # Global images, fonts, SVGs (placeholders via .gitkeep)
-├── components/ui/          # Shared UI primitives (Button, Card, Form, …)
-├── config/                 # Site config & env-friendly constants (`site.ts`)
+├── app/                         # ROUTING LAYER (Next.js)
+│   ├── layout.tsx               # Global <html> / <body>, fonts, metadata
+│   ├── page.tsx                 # /
+│   ├── auth/
+│   │   ├── login/page.tsx       # /auth/login
+│   │   └── signup/page.tsx      # /auth/signup
+│   ├── dashboard/
+│   │   ├── layout.tsx           # Dashboard sidebar
+│   │   └── page.tsx             # /dashboard
+│   └── collect/page.tsx         # /collect
+├── components/ui/               # Shared primitives (shadcn-style)
+├── config/                      # Site constants (`site.ts`)
 ├── features/
-│   ├── auth/               # Auth placeholder (api/, components/, hooks/, types/)
-│   ├── dashboard/          # Dashboard placeholder
-│   └── proud-moments/      # Collect + present flow (components, types, index)
-├── hooks/                  # Shared hooks (empty until you add some)
-├── layouts/                # Optional layout helpers (e.g. `main-layout.tsx`)
-├── page/                   # All screen modules (landing, collect, home route)
-├── pages/                  # README only — Next reserves `pages/` for legacy routing
-├── services/               # Third-party SDK setup (empty for now)
-├── store/                  # Global client state (empty for now)
-├── utils/                  # Helpers (`cn.ts`, …)
-└── styles/                 # Global CSS (`globals.css` + Tailwind `@source`)
+│   ├── auth/                    # components/, hooks/, services/
+│   ├── dashboard/               # components/, types/
+│   ├── landing/                 # Marketing landing
+│   └── proud-moments/           # Collect + present flow
+├── hooks/                       # Global shared hooks
+├── lib/                         # Shared clients (e.g. `http.ts`)
+├── types/                       # Global TypeScript types
+├── utils/                       # Pure helpers (`cn.ts`)
+└── styles/                      # Tailwind + `globals.css`
 ```
 
-### Path alias
+See [`src/app/README.md`](src/app/README.md) for how route groups map to URLs.
 
-Imports use **`@/*` → `./src/*`** (see [`tsconfig.json`](tsconfig.json)).
+Imports use **`@/*` → `./src/*`** ([`tsconfig.json`](tsconfig.json)).
 
 ## For other developers
 
@@ -67,20 +73,14 @@ Imports use **`@/*` → `./src/*`** (see [`tsconfig.json`](tsconfig.json)).
 
 - **Next.js 15** (App Router), **React 19**
 - **Tailwind CSS v4** ([`src/styles/globals.css`](src/styles/globals.css))
-- **shadcn-style UI** in [`src/components/ui/`](src/components/ui) (Radix primitives, `class-variance-authority`, Lucide)
-- **React Hook Form** + **Zod** — schema under [`src/features/proud-moments/types/schema.ts`](src/features/proud-moments/types/schema.ts), public exports from [`src/features/proud-moments/index.ts`](src/features/proud-moments/index.ts)
+- **shadcn-style UI** in [`src/components/ui/`](src/components/ui)
+- **React Hook Form** + **Zod** — [`src/features/proud-moments/types/schema.ts`](src/features/proud-moments/types/schema.ts)
 
 ### Yarn / lockfile
 
-- Lockfile is **[`yarn.lock`](yarn.lock)** (Yarn Berry format).
-- [`.yarnrc.yml`](.yarnrc.yml) sets `nodeLinker: node-modules` so we use a normal **`node_modules`** tree (not Plug’n’Play).
-- **Commit** [`.yarn/releases/yarn-4.14.1.cjs`](.yarn/releases/yarn-4.14.1.cjs); do **not** ignore it. Local-only Yarn folders are listed in [`.gitignore`](.gitignore).
-- [`package.json`](package.json) includes `dependenciesMeta.sharp.built: true` so **Sharp**’s install script runs under Yarn 4 (Next image optimization).
+- **[`yarn.lock`](yarn.lock)** (Yarn Berry), [`.yarnrc.yml`](.yarnrc.yml) with `nodeLinker: node-modules`
+- Commit [`.yarn/releases/yarn-4.14.1.cjs`](.yarn/releases/yarn-4.14.1.cjs); [`package.json`](package.json) `dependenciesMeta.sharp.built: true`
 
 ### Environment variables
 
-None are required for local development right now. Add `NEXT_PUBLIC_*` keys in [`src/config/site.ts`](src/config/site.ts) (or a dedicated env module) when you wire APIs.
-
-### Corepack (optional)
-
-If you prefer **Corepack** instead of the vendored Yarn binary, enable it when your Node install allows writes to the global `bin` directory (or use a user-local Node via nvm/fnm/Volta). This repo works without Corepack as long as you run `yarn` from the project root so `.yarnrc` is respected.
+None required locally. Use `NEXT_PUBLIC_*` in [`src/config/site.ts`](src/config/site.ts) or `src/lib/http.ts` when you add APIs.

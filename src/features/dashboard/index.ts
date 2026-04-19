@@ -1,4 +1,2 @@
-/**
- * Dashboard feature — placeholder for future domain logic and UI.
- */
-export {};
+export { DashboardOverview } from "./components/dashboard-overview";
+export type { DashboardMetricId } from "./types/dashboard.types";
