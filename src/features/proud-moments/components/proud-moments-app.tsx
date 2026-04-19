@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import {
@@ -10,17 +11,19 @@ import {
   type ProudMomentsFormValues,
   type SubmittedMomentCard,
 } from "@/features/proud-moments/types/schema";
+import { useProudMomentsSession } from "@/features/proud-moments/providers/proud-moments-session-provider";
 import { Form } from "@/components/ui/form";
-import { PresentationView } from "./presentation-view";
+import { siteConfig } from "@/config/site";
+
 import { ProudMomentsForm } from "./proud-moments-form";
 
-type View = "form" | "present";
-
 export function ProudMomentsApp() {
-  const [view, setView] = useState<View>("form");
-  const [submitted, setSubmitted] = useState<SubmittedMomentCard[] | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { setPresentation, presentation, pendingRestoreToForm, clearRestoreRequest, updatePresentationImageAt } =
+    useProudMomentsSession();
+
   const [restoredImageUrls, setRestoredImageUrls] = useState<(string | null)[] | null>(null);
-  const presentationUrlsRef = useRef<string[]>([]);
 
   const form = useForm<ProudMomentsFormValues>({
     resolver: zodResolver(proudMomentsFormSchema),
@@ -29,25 +32,29 @@ export function ProudMomentsApp() {
     },
   });
 
-  const revokePresentationUrls = () => {
-    presentationUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-    presentationUrlsRef.current = [];
-  };
-
   useEffect(() => {
-    return () => {
-      revokePresentationUrls();
-    };
-  }, []);
+    if (pathname !== siteConfig.routes.collect) {
+      return;
+    }
+    if (!pendingRestoreToForm || !presentation?.length) {
+      return;
+    }
+
+    setRestoredImageUrls(presentation.map((card) => card.imageUrl));
+    form.reset({
+      cards: presentation.map((card) => ({
+        title: card.title,
+        date: card.date,
+        description: card.description,
+        image: undefined,
+      })),
+    });
+    clearRestoreRequest();
+  }, [pathname, pendingRestoreToForm, presentation, clearRestoreRequest, form]);
 
   const handleSubmit = (values: ProudMomentsFormValues) => {
-    revokePresentationUrls();
-
     const nextSubmitted: SubmittedMomentCard[] = values.cards.map((card) => {
       const imageUrl = card.image instanceof File ? URL.createObjectURL(card.image) : null;
-      if (imageUrl) {
-        presentationUrlsRef.current.push(imageUrl);
-      }
 
       return {
         title: card.title,
@@ -57,36 +64,16 @@ export function ProudMomentsApp() {
       };
     });
 
-    setSubmitted(nextSubmitted);
+    setPresentation(nextSubmitted);
     setRestoredImageUrls(null);
-    setView("present");
-  };
-
-  const handleBack = () => {
-    if (!submitted) {
-      setView("form");
-      return;
-    }
-
-    setRestoredImageUrls(submitted.map((card) => card.imageUrl));
-    form.reset({
-      cards: submitted.map((card) => ({
-        title: card.title,
-        date: card.date,
-        description: card.description,
-        image: undefined,
-      })),
-    });
-    setView("form");
+    router.push(siteConfig.routes.collectPresentation);
   };
 
   const handleImageRemoved = (index: number) => {
+    updatePresentationImageAt(index, null);
     setRestoredImageUrls((prev) => {
-      if (!prev) return prev;
-      const url = prev[index];
-      if (url) {
-        URL.revokeObjectURL(url);
-        presentationUrlsRef.current = presentationUrlsRef.current.filter((u) => u !== url);
+      if (!prev) {
+        return prev;
       }
       const next = [...prev];
       next[index] = null;
@@ -96,13 +83,9 @@ export function ProudMomentsApp() {
 
   return (
     <Form {...form}>
-      {view === "form" ? (
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <ProudMomentsForm restoredImageUrls={restoredImageUrls} onImageRemoved={handleImageRemoved} />
-        </form>
-      ) : submitted ? (
-        <PresentationView cards={submitted} onBack={handleBack} />
-      ) : null}
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <ProudMomentsForm restoredImageUrls={restoredImageUrls} onImageRemoved={handleImageRemoved} />
+      </form>
     </Form>
   );
 }

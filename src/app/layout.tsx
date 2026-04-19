@@ -4,6 +4,7 @@ import { Geist } from "next/font/google";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/config/site";
+import { ProudMomentsSessionProvider } from "@/features/proud-moments/providers/proud-moments-session-provider";
 
 import "@/styles/globals.css";
 
@@ -28,8 +29,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.className} flex min-h-screen flex-col`}>
         <AuthProvider>
-          <SiteHeader />
-          <div className="flex-1">{children}</div>
+          <ProudMomentsSessionProvider>
+            <SiteHeader />
+            <div className="flex-1">{children}</div>
+          </ProudMomentsSessionProvider>
         </AuthProvider>
       </body>
     </html>

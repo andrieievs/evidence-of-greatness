@@ -8,6 +8,7 @@ export const siteConfig = {
   routes: {
     home: "/",
     collect: "/collect",
+    collectPresentation: "/collect/presentation",
     dashboard: "/dashboard",
     login: "/auth/login",
     signup: "/auth/signup",

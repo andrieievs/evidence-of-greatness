@@ -1,9 +1,15 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { ProudMomentsApp } from "./proud-moments-app";
 import { siteConfig } from "@/config/site";
 
-export function CollectShell() {
+import { ProudMomentsApp } from "./proud-moments-app";
+
+type CollectShellProps = {
+  children?: ReactNode;
+};
+
+export function CollectShell({ children }: CollectShellProps) {
   return (
     <div className="mx-auto min-h-screen max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <Link
@@ -12,7 +18,7 @@ export function CollectShell() {
       >
         ← Back to home
       </Link>
-      <ProudMomentsApp />
+      {children ?? <ProudMomentsApp />}
     </div>
   );
 }

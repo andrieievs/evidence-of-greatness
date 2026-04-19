@@ -35,6 +35,9 @@ export function SiteHeader() {
                 <Link href={siteConfig.routes.collect}>Collect</Link>
               </Button>
               <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                <Link href={siteConfig.routes.collectPresentation}>Presentation</Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 <Link href={siteConfig.routes.dashboard}>Dashboard</Link>
               </Button>
               <SignOutButton />
