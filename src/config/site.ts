@@ -14,7 +14,5 @@ export const siteConfig = {
     collect: "/collect",
     collectPresentation: "/collect/presentation",
     dashboard: "/dashboard",
-    login: "/auth/login",
-    signup: "/auth/signup",
   },
 } as const;

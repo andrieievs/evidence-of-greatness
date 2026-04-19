@@ -6,25 +6,13 @@ import { Button } from "@/components/ui/button";
 import { appShellClass, siteConfig } from "@/config/site";
 import { cn } from "@/utils/cn";
 
-function collectEntryHref(isSignedIn: boolean) {
-  if (isSignedIn) {
-    return siteConfig.routes.collect;
-  }
-  const q = new URLSearchParams({ callbackUrl: siteConfig.routes.collect });
-  return `${siteConfig.routes.login}?${q.toString()}`;
-}
-
 const display = Fraunces({
   subsets: ["latin"],
   weight: ["500", "600"],
 });
 
-type LandingPageProps = {
-  isSignedIn: boolean;
-};
-
-export function LandingPage({ isSignedIn }: LandingPageProps) {
-  const collectHref = collectEntryHref(isSignedIn);
+export function LandingPage() {
+  const collectHref = siteConfig.routes.collect;
 
   return (
     <main className="min-h-screen">
@@ -55,7 +43,7 @@ export function LandingPage({ isSignedIn }: LandingPageProps) {
           </p>
           <div className="mt-12 flex flex-col items-center gap-4 sm:mt-14">
             <Button asChild size="lg" className="rounded-full px-10 text-base shadow-md">
-              <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
+              <Link href={collectHref}>Start your memory collection</Link>
             </Button>
             <p className="max-w-md text-sm italic leading-relaxed text-muted-foreground/90">
               Small reminders of growth add up—especially on the hard days.
@@ -117,7 +105,7 @@ export function LandingPage({ isSignedIn }: LandingPageProps) {
               Ready to honor the path you&apos;re on?
             </p>
             <Button asChild size="lg" className="mt-8 rounded-full px-10 shadow-sm">
-              <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
+              <Link href={collectHref}>Start your memory collection</Link>
             </Button>
           </div>
         </div>
