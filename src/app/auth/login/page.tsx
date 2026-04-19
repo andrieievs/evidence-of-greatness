@@ -4,7 +4,8 @@ import { Suspense } from "react";
 
 import { LoginForm } from "@/features/auth/components/login-form";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+import { appShellClass, siteConfig } from "@/config/site";
+import { cn } from "@/utils/cn";
 
 export const metadata: Metadata = {
   title: "Log in",
@@ -26,14 +27,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center gap-6 px-4 py-16">
-      <Suspense fallback={<LoginFallback />}>
-        <LoginForm oauth={oauth} />
-      </Suspense>
-      <div className="flex flex-col gap-3">
-        <Button asChild variant="ghost">
-          <Link href={siteConfig.routes.home}>Back to home</Link>
-        </Button>
+    <div className={cn(appShellClass, "flex min-h-[60vh] flex-col justify-center gap-6 py-16")}>
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6">
+        <Suspense fallback={<LoginFallback />}>
+          <LoginForm oauth={oauth} />
+        </Suspense>
+        <div className="flex flex-col gap-3">
+          <Button asChild variant="ghost">
+            <Link href={siteConfig.routes.home}>Back to home</Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

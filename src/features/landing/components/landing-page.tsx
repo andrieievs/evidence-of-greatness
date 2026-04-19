@@ -3,7 +3,8 @@ import { CalendarHeart, Sparkles, Users } from "lucide-react";
 import { Fraunces } from "next/font/google";
 
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+import { appShellClass, siteConfig } from "@/config/site";
+import { cn } from "@/utils/cn";
 
 function collectEntryHref(isSignedIn: boolean) {
   if (isSignedIn) {
@@ -35,7 +36,12 @@ export function LandingPage({ isSignedIn }: LandingPageProps) {
               "radial-gradient(ellipse 80% 50% at 50% -20%, rgb(139 92 246 / 0.25), transparent), radial-gradient(ellipse 60% 40% at 100% 0%, rgb(251 191 36 / 0.15), transparent)",
           }}
         />
-        <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pb-24 pt-20 text-center sm:px-6 sm:pb-32 sm:pt-28 lg:px-8">
+        <div
+          className={cn(
+            appShellClass,
+            "relative flex flex-col items-center pb-24 pt-20 text-center sm:pb-32 sm:pt-28",
+          )}
+        >
           <p className="mb-6 max-w-xl text-sm font-medium tracking-wide text-muted-foreground sm:text-base">
             When things get tough, remember how far you&apos;ve come.
           </p>
@@ -58,8 +64,8 @@ export function LandingPage({ isSignedIn }: LandingPageProps) {
         </div>
       </section>
 
-      <section className="border-b border-border/40 bg-background px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-        <div className="mx-auto max-w-6xl">
+      <section className="border-b border-border/40 bg-background py-20 lg:py-28">
+        <div className={appShellClass}>
           <h2 className="text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
             Why this exists
           </h2>
@@ -104,14 +110,16 @@ export function LandingPage({ isSignedIn }: LandingPageProps) {
         </div>
       </section>
 
-      <section className="bg-muted/30 px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className={`${display.className} text-2xl font-medium text-foreground sm:text-3xl`}>
-            Ready to honor the path you&apos;re on?
-          </p>
-          <Button asChild size="lg" className="mt-8 rounded-full px-10 shadow-sm">
-            <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
-          </Button>
+      <section className="bg-muted/30 py-16">
+        <div className={appShellClass}>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className={`${display.className} text-2xl font-medium text-foreground sm:text-3xl`}>
+              Ready to honor the path you&apos;re on?
+            </p>
+            <Button asChild size="lg" className="mt-8 rounded-full px-10 shadow-sm">
+              <Link href={collectHref}>{isSignedIn ? "Start your memory collection" : "Sign in to start collecting"}</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </main>

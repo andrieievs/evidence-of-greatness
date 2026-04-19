@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { siteConfig } from "@/config/site";
+import { appShellClass, siteConfig } from "@/config/site";
+import { cn } from "@/utils/cn";
 
 export default function DashboardLayout({
   children,
@@ -8,7 +9,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className={cn(appShellClass, "py-10")}>
       <Link
         href={siteConfig.routes.home}
         className="mb-8 inline-flex text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
