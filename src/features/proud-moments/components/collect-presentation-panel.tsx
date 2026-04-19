@@ -11,7 +11,7 @@ import { PresentationView } from "./presentation-view";
 
 export function CollectPresentationPanel() {
   const router = useRouter();
-  const { presentation, requestRestoreToForm } = useProudMomentsSession();
+  const { presentation } = useProudMomentsSession();
 
   if (!presentation?.length) {
     return (
@@ -32,7 +32,6 @@ export function CollectPresentationPanel() {
     <PresentationView
       cards={presentation}
       onBack={() => {
-        requestRestoreToForm();
         router.push(siteConfig.routes.collect);
       }}
     />

@@ -20,8 +20,7 @@ import { ProudMomentsForm } from "./proud-moments-form";
 export function ProudMomentsApp() {
   const router = useRouter();
   const pathname = usePathname();
-  const { setPresentation, presentation, pendingRestoreToForm, clearRestoreRequest, updatePresentationImageAt } =
-    useProudMomentsSession();
+  const { setPresentation, presentation, updatePresentationImageAt } = useProudMomentsSession();
 
   const [restoredImageUrls, setRestoredImageUrls] = useState<(string | null)[] | null>(null);
 
@@ -32,11 +31,14 @@ export function ProudMomentsApp() {
     },
   });
 
+  // Keep the form in sync with the in-memory presentation whenever you're on Collect
+  // (including via header nav from Presentation). Otherwise a fresh mount would reset
+  // to one empty card and the next submit would replace — and drop — previous cards.
   useEffect(() => {
     if (pathname !== siteConfig.routes.collect) {
       return;
     }
-    if (!pendingRestoreToForm || !presentation?.length) {
+    if (!presentation?.length) {
       return;
     }
 
@@ -49,12 +51,16 @@ export function ProudMomentsApp() {
         image: undefined,
       })),
     });
-    clearRestoreRequest();
-  }, [pathname, pendingRestoreToForm, presentation, clearRestoreRequest, form]);
+  }, [pathname, presentation, form]);
 
   const handleSubmit = (values: ProudMomentsFormValues) => {
-    const nextSubmitted: SubmittedMomentCard[] = values.cards.map((card) => {
-      const imageUrl = card.image instanceof File ? URL.createObjectURL(card.image) : null;
+    const nextSubmitted: SubmittedMomentCard[] = values.cards.map((card, index) => {
+      let imageUrl: string | null = null;
+      if (card.image instanceof File) {
+        imageUrl = URL.createObjectURL(card.image);
+      } else {
+        imageUrl = restoredImageUrls?.[index] ?? null;
+      }
 
       return {
         title: card.title,

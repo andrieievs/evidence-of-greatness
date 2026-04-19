@@ -8,16 +8,12 @@ type ProudMomentsSessionContextValue = {
   presentation: SubmittedMomentCard[] | null;
   setPresentation: (cards: SubmittedMomentCard[]) => void;
   updatePresentationImageAt: (index: number, imageUrl: string | null) => void;
-  pendingRestoreToForm: boolean;
-  requestRestoreToForm: () => void;
-  clearRestoreRequest: () => void;
 };
 
 const ProudMomentsSessionContext = createContext<ProudMomentsSessionContextValue | null>(null);
 
 export function ProudMomentsSessionProvider({ children }: { children: ReactNode }) {
   const [presentation, setPresentationState] = useState<SubmittedMomentCard[] | null>(null);
-  const [pendingRestoreToForm, setPendingRestoreToForm] = useState(false);
   const blobUrlsRef = useRef<Set<string>>(new Set());
 
   const trackBlob = useCallback((url: string) => {
@@ -32,23 +28,22 @@ export function ProudMomentsSessionProvider({ children }: { children: ReactNode 
     blobUrlsRef.current.delete(url);
   }, []);
 
-  const revokeAllTracked = useCallback(() => {
-    blobUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
-    blobUrlsRef.current.clear();
-  }, []);
+  const setPresentation = useCallback((cards: SubmittedMomentCard[]) => {
+    const keep = new Set(cards.map((c) => c.imageUrl).filter((u): u is string => Boolean(u)));
 
-  const setPresentation = useCallback(
-    (cards: SubmittedMomentCard[]) => {
-      revokeAllTracked();
-      cards.forEach((c) => {
-        if (c.imageUrl) {
-          trackBlob(c.imageUrl);
-        }
-      });
-      setPresentationState(cards);
-    },
-    [revokeAllTracked, trackBlob],
-  );
+    for (const url of Array.from(blobUrlsRef.current)) {
+      if (!keep.has(url)) {
+        URL.revokeObjectURL(url);
+        blobUrlsRef.current.delete(url);
+      }
+    }
+
+    keep.forEach((url) => {
+      blobUrlsRef.current.add(url);
+    });
+
+    setPresentationState(cards);
+  }, []);
 
   const updatePresentationImageAt = useCallback(
     (index: number, imageUrl: string | null) => {
@@ -71,31 +66,13 @@ export function ProudMomentsSessionProvider({ children }: { children: ReactNode 
     [revokeBlob, trackBlob],
   );
 
-  const requestRestoreToForm = useCallback(() => {
-    setPendingRestoreToForm(true);
-  }, []);
-
-  const clearRestoreRequest = useCallback(() => {
-    setPendingRestoreToForm(false);
-  }, []);
-
   const value = useMemo(
     () => ({
       presentation,
       setPresentation,
       updatePresentationImageAt,
-      pendingRestoreToForm,
-      requestRestoreToForm,
-      clearRestoreRequest,
     }),
-    [
-      presentation,
-      setPresentation,
-      updatePresentationImageAt,
-      pendingRestoreToForm,
-      requestRestoreToForm,
-      clearRestoreRequest,
-    ],
+    [presentation, setPresentation, updatePresentationImageAt],
   );
 
   return <ProudMomentsSessionContext.Provider value={value}>{children}</ProudMomentsSessionContext.Provider>;
