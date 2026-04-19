@@ -32,9 +32,6 @@ export default function LoginPage() {
       </Suspense>
       <div className="flex flex-col gap-3">
         <Button asChild variant="ghost">
-          <Link href={siteConfig.routes.signup}>Create an account</Link>
-        </Button>
-        <Button asChild variant="ghost">
           <Link href={siteConfig.routes.home}>Back to home</Link>
         </Button>
       </div>
