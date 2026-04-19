@@ -38,6 +38,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     authorized({ request, auth }) {
       const { pathname, search } = request.nextUrl;
 
+      // Auth.js routes must stay reachable without a session (OAuth callback, CSRF, providers, session fetch).
+      if (pathname.startsWith("/api/auth")) {
+        return true;
+      }
       if (pathname === "/") {
         return true;
       }
